@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Form</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f1f1f1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Form container styling */
+        #attendanceForm {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        /* Section styling */
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Specific background colors for different sections */
+        .name-section {
+            background-color: #e0f7fa; /* Light Blue */
+        }
+
+        .status-section {
+            background-color: #c8e6c9; /* Light Green */
+        }
+
+        .timestamp-section {
+            background-color: #ffccbc; /* Light Orange */
+        }
+
+        /* Label and Input styling */
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Read-only input styling for the timestamp */
+        #timestampField {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+            pointer-events: none; /* Prevent editing */
+        }
+
+        /* Responsive Design for Mobile Compatibility */
+        @media (max-width: 600px) {
+            #attendanceForm {
+                padding: 15px;
+                width: 90%;
+                max-width: none;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            input[type="text"], select, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <form id="attendanceForm" action="https://script.google.com/macros/s/AKfycbzQODSJt4iWwIUpZ5wxaOWiN-aUQZ7oXpkCxJ4U2eA7MmIjrKjJAeCj3MOQeTvSVxhI/exec" method="post">
+        <!-- Name Section -->
+        <div class="section name-section">
+            <label for="name">Name:</label>
+            <select id="name" name="name" required onchange="updateTimestamp()">
+                <option value="Nupur Adhikari">Nupur Adhikari</option>
+                <option value="Abhishek Nandi">Abhishek Nandi</option>
+                <option value="Anamika mondal">Anamika mondal</option>
+                <option value="Mandira das">Mandira das</option>
+                <option value="susmita karmakar">susmita karmakar</option>
+                <option value="Priyanka majhi">Priyanka majhi</option>
+                <option value="Subham mondal">Subham mondal</option>
+                <option value="Gopal Baul">Gopal Baul</option>
+                <option value="Rohan hazra">Rohan hazra</option>
+                <option value="Prasenjit hazra">Prasenjit hazra</option>
+                <option value="souvik ghosh">souvik ghosh</option>
+                <option value="Rohit routh">Rohit routh</option>
+                <option value="Swapan Majhi">Swapan Majhi</option>
+                <option value="Sourima das">Sourima das</option>
+                <option value="Apurba Ghosh">Apurba Ghosh</option>
+                <option value="Baptu Bairagya">Baptu Bairagya</option>
+                <option value="Kalpana Halder">Kalpana Halder</option>
+                <option value="Ayan Biswas">Ayan Biswas</option>
+                <option value="Indrajit Pal">Indrajit Pal</option>
+            </select>
+        </div>
+
+        <!-- Timestamp Section -->
+        <div class="section timestamp-section">
+            <label for="timestampField">Timestamp:</label>
+            <input type="text" id="timestampField" name="timestamp" required readonly>
+        </div>
+
+        <!-- Status Section -->
+        <div class="section status-section">
+            <label for="status">Attendance Status:</label>
+            <select id="status" name="status" required>
+                <option value="In">In</option>
+                <option value="Out">Out</option>
+            </select>
+        </div>
+
+        <!-- Hidden Timestamp -->
+        <input type="hidden" id="timestamp" name="timestamp" required>
+
+        <!-- Hidden Location -->
+        <input type="hidden" id="location" name="location" required>
+
+        <button type="submit" id="submitBtn">Submit</button>
+        <p id="locationMessage" style="color: red;"></p>
+    </form>
+
+    <script>
+        // Function to update the timestamp in Indian format (DD-MM-YYYY HH:MM:SS)
+        function updateTimestamp() {
+            const timestampField = document.getElementById('timestampField');
+            const currentDate = new Date();
+            
+            // Get day, month, year, hours, minutes, seconds
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+            const year = currentDate.getFullYear();
+            const hours = String(currentDate.getHours()).padStart(2, '0');
+            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+            
+            // Format the date and time in Indian format (DD-MM-YYYY HH:MM:SS)
+            const formattedTimestamp = `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+            
+            // Set the formatted timestamp in the input field
+            timestampField.value = formattedTimestamp;
+            document.getElementById('timestamp').value = formattedTimestamp;
+        }
+
+        // Function to capture the user's location
+        function captureLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    // Store the location in the hidden field
+                    document.getElementById('location').value = `${lat}, ${lon}`;
+                    document.getElementById('locationMessage').textContent = ''; // Clear location message
+                }, function(error) {
+                    document.getElementById('locationMessage').textContent = 'Geolocation error occurred. Please enable location services.';
+                });
+            } else {
+                document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
+            }
+        }
+
+        // Call location capture function on page load
+        window.onload = function() {
+            captureLocation();
+            updateTimestamp(); // Call to update the timestamp as well
+        };
+    </script>
+
+</body>
+</html>
