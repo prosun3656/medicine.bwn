@@ -112,7 +112,7 @@
 </head>
 <body>
 
-    <form id="attendanceForm" action="https://script.google.com/macros/s/AKfycbzQODSJt4iWwIUpZ5wxaOWiN-aUQZ7oXpkCxJ4U2eA7MmIjrKjJAeCj3MOQeTvSVxhI/exec" method="post">
+    <form id="attendanceForm" action="https://script.google.com/macros/s/AKfycbzQODSJt4iWwIUpZ5wxaOWiN-aUQZ7oXpkCxJ4U2eA7MmIjrKjJAeCj3MOQeTvSVxhI/exec" method="post" onsubmit="return validateLocation()">
         <!-- Name Section -->
         <div class="section name-section">
             <label for="name">Name:</label>
@@ -233,6 +233,15 @@
             } else {
                 document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
             }
+        }
+
+        // Function to validate location before form submission
+        function validateLocation() {
+            const locationMessage = document.getElementById('locationMessage').textContent;
+            if (locationMessage) {
+                return false; // Block form submission if location is invalid
+            }
+            return true; // Allow form submission
         }
 
         // Call location capture function on page load
