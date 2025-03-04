@@ -160,8 +160,8 @@
         <!-- Hidden Location -->
         <input type="hidden" id="location" name="location" required>
 
-        <button type="submit" id="submitBtn">Submit</button>
-        <p id="locationMessage" style="color: red;"></p>
+        <button type="submit" id="submitBtn" disabled>Submit</button>
+        <p id="locationMessage" style="color: red;">Please enable location services to submit the form.</p>
     </form>
 
     <script>
@@ -188,19 +188,37 @@
 
         // Function to capture the user's location
         function captureLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
+            return new Promise(function(resolve, reject) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
 
-                    // Store the location in the hidden field
-                    document.getElementById('location').value = `${lat}, ${lon}`;
-                    document.getElementById('locationMessage').textContent = ''; // Clear location message
-                }, function(error) {
-                    document.getElementById('locationMessage').textContent = 'Geolocation error occurred. Please enable location services.';
-                });
-            } else {
-                document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
+                        // Store the location in the hidden field
+                        document.getElementById('location').value = `${lat}, ${lon}`;
+                        document.getElementById('locationMessage').textContent = ''; // Clear location message
+                        document.getElementById('submitBtn').disabled = false; // Enable the submit button
+                        resolve(); // Resolve the promise
+                    }, function(error) {
+                        document.getElementById('locationMessage').textContent = 'Geolocation error occurred. Please enable location services.';
+                        document.getElementById('submitBtn').disabled = true; // Keep the submit button disabled
+                        reject(); // Reject the promise
+                    });
+                } else {
+                    document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
+                    document.getElementById('submitBtn').disabled = true; // Keep the submit button disabled
+                    reject(); // Reject the promise
+                }
+            });
+        }
+
+        // Function to ensure location is captured before form submission
+        async function captureLocationBeforeSubmit() {
+            try {
+                await captureLocation();
+                return true; // Allow form submission if location is captured
+            } catch (error) {
+                return false; // Prevent form submission if location is not captured
             }
         }
 
