@@ -200,6 +200,9 @@
             return distance;
         }
 
+        // Coordinates for Nawabhat Bus Station
+        const nawabhatBusStation = { lat: 23.280239, lon: 87.890433 };
+        
         // Function to capture the user's location
         function captureLocation() {
             return new Promise(function(resolve, reject) {
@@ -208,24 +211,18 @@
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
 
-                        // Coordinates for the four corners of the allowed area
-                        const corner1 = { lat: 23.2672256, lon: 87.8267448 }; // First corner
-                        const corner2 = { lat: 23.2668338, lon: 87.8277963 }; // Second corner
-                        const corner3 = { lat: 23.2660921, lon: 87.8254493 }; // Third corner
-                        const corner4 = { lat: 23.268127, lon: 87.82782 };    // Fourth corner
+                        // Calculate the distance from the Nawabhat Bus Station
+                        const distance = getDistanceFromLatLonInMeters(lat, lon, nawabhatBusStation.lat, nawabhatBusStation.lon);
 
-                        // Check if the user is inside the rectangular area defined by the corners
-                        if (lat >= Math.min(corner1.lat, corner2.lat, corner3.lat, corner4.lat) &&
-                            lat <= Math.max(corner1.lat, corner2.lat, corner3.lat, corner4.lat) &&
-                            lon >= Math.min(corner1.lon, corner2.lon, corner3.lon, corner4.lon) &&
-                            lon <= Math.max(corner1.lon, corner2.lon, corner3.lon, corner4.lon)) {
+                        // Check if the user is within a 100-meter radius of Nawabhat Bus Station
+                        if (distance <= 100) { // 100 meters
                             document.getElementById('location').value = `${lat}, ${lon}`;
                             document.getElementById('locationMessage').textContent = ''; // Clear location message
                             document.getElementById('submitBtn').disabled = false; // Enable the submit button
                             resolve(); // Resolve the promise, allowing form submission
                         } else {
-                            // If the user is outside the allowed area
-                            document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move within the specified area.';
+                            // If the user is outside the 100-meter radius
+                            document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move closer to Nawabhat Bus Station.';
                             document.getElementById('submitBtn').disabled = true; // Disable the submit button
                             reject(); // Reject the promise, preventing form submission
                         }
