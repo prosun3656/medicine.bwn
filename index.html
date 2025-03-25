@@ -186,47 +186,9 @@
             document.getElementById('timestamp').value = formattedTimestamp;
         }
 
-        // Function to capture the user's location and check if it's within the specified coordinates
-        function captureLocation() {
-            return new Promise(function(resolve, reject) {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-
-                        // Coordinates of the two points (within 20 meters radius)
-                        const point1 = { lat: 23.2669989, lon: 87.8261226 };
-                        const point2 = { lat: 23.2439116, lon: 87.8682115 };
-
-                        // Calculate distance between two points in meters
-                        const distance = getDistanceFromLatLonInMeters(lat, lon, point1.lat, point1.lon);
-
-                        if (distance <= 20) {
-                            document.getElementById('location').value = `${lat}, ${lon}`;
-                            document.getElementById('locationMessage').textContent = ''; // Clear location message
-                            document.getElementById('submitBtn').disabled = false; // Enable the submit button
-                            resolve(); // Resolve the promise
-                        } else {
-                            document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form.';
-                            document.getElementById('submitBtn').disabled = true; // Keep the submit button disabled
-                            reject(); // Reject the promise
-                        }
-                    }, function(error) {
-                        document.getElementById('locationMessage').textContent = 'Geolocation error occurred. Please enable location services.';
-                        document.getElementById('submitBtn').disabled = true; // Keep the submit button disabled
-                        reject(); // Reject the promise
-                    });
-                } else {
-                    document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
-                    document.getElementById('submitBtn').disabled = true; // Keep the submit button disabled
-                    reject(); // Reject the promise
-                }
-            });
-        }
-
-        // Function to calculate the distance between two lat/lon coordinates in meters
+        // Function to calculate the distance between two latitude/longitude points in meters
         function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius of the Earth in kilometers
+            const R = 6371; // Radius of the Earth in km
             const dLat = (lat2 - lat1) * Math.PI / 180;
             const dLon = (lon2 - lon1) * Math.PI / 180;
             const a = 
@@ -238,10 +200,50 @@
             return distance;
         }
 
+        // Function to capture the user's location
+        function captureLocation() {
+            return new Promise(function(resolve, reject) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+
+                        // Coordinates of the two points (within 20 meters radius)
+                        const point1 = { lat: 23.2380002, lon: 87.8590025 };
+                        const point2 = { lat: 23.2439116, lon: 87.8682115 };
+
+                        // Calculate distance between two points in meters
+                        const distance = getDistanceFromLatLonInMeters(lat, lon, point1.lat, point1.lon);
+
+                        // Check if the distance is within the 20 meters radius
+                        if (distance <= 20) {
+                            document.getElementById('location').value = `${lat}, ${lon}`;
+                            document.getElementById('locationMessage').textContent = ''; // Clear location message
+                            document.getElementById('submitBtn').disabled = false; // Enable the submit button
+                            resolve(); // Resolve the promise, allowing form submission
+                        } else if (distance > 20) {
+                            // If the user is outside the 20 meters radius
+                            document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move within the specified area.';
+                            document.getElementById('submitBtn').disabled = true; // Disable the submit button
+                            reject(); // Reject the promise, preventing form submission
+                        }
+                    }, function(error) {
+                        document.getElementById('locationMessage').textContent = 'Geolocation error occurred. Please enable location services.';
+                        document.getElementById('submitBtn').disabled = true; // Disable the submit button
+                        reject(); // Reject the promise if there was an error retrieving the location
+                    });
+                } else {
+                    document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
+                    document.getElementById('submitBtn').disabled = true; // Disable the submit button
+                    reject(); // Reject the promise if geolocation is not supported
+                }
+            });
+        }
+
         // Call location capture function on page load
         window.onload = function() {
             captureLocation();
-            updateTimestamp(); // Ensure timestamp is updated when the page loads
+            updateTimestamp(); // Call to update the timestamp as well
         };
     </script>
 
