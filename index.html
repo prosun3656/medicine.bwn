@@ -200,9 +200,12 @@
             return distance;
         }
 
-        // Coordinates for Hemraj Rice Mill
-        const locationCoordinates = { lat: 23.2756689, lon: 87.8044483 };
-        
+        // Coordinates for Nawabhat Bus Station
+        const nawabhatBusStation = { lat: 23.2669989, lon: 87.8261176 };
+
+        // Coordinates for 7, Parcus Rd., near Sufi Bastralaya, Khosbagan, Bardhaman
+        const parcusRoadLocation = { lat: 23.2758453, lon: 87.8057854 };
+
         // Function to capture the user's location
         function captureLocation() {
             return new Promise(function(resolve, reject) {
@@ -211,17 +214,18 @@
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
 
-                        // Calculate the distance from the specified location
-                        const distance = getDistanceFromLatLonInMeters(lat, lon, locationCoordinates.lat, locationCoordinates.lon);
+                        // Calculate distance from both locations
+                        const distanceFromNawabhat = getDistanceFromLatLonInMeters(lat, lon, nawabhatBusStation.lat, nawabhatBusStation.lon);
+                        const distanceFromParcusRoad = getDistanceFromLatLonInMeters(lat, lon, parcusRoadLocation.lat, parcusRoadLocation.lon);
 
-                        // Check if the user is within a 200-meter radius of the location (adjustable threshold)
-                        if (distance <= 200) { // 200 meters
+                        // Check if the user is within a 200-meter radius of either location
+                        if (distanceFromNawabhat <= 200 || distanceFromParcusRoad <= 200) {
                             document.getElementById('location').value = `${lat}, ${lon}`;
                             document.getElementById('locationMessage').textContent = ''; // Clear location message
                             document.getElementById('submitBtn').disabled = false; // Enable the submit button
                             resolve(); // Resolve the promise, allowing form submission
                         } else {
-                            // If the user is outside the 200-meter radius
+                            // If the user is outside the 200-meter radius of both locations
                             document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move closer to the location.';
                             document.getElementById('submitBtn').disabled = true; // Disable the submit button
                             reject(); // Reject the promise, preventing form submission
