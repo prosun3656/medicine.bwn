@@ -208,21 +208,23 @@
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
 
-                        // Coordinates of the two points (within 20 meters radius)
-                        const point1 = { lat: 23.2669989, lon: 87.8261176 }; // Your specific point 1
-                        const point2 = { lat: 23.2669989, lon: 87.8286975 }; // Your specific point 2
+                        // Coordinates for the four corners of the allowed area
+                        const corner1 = { lat: 23.2672256, lon: 87.8267448 }; // First corner
+                        const corner2 = { lat: 23.2668338, lon: 87.8277963 }; // Second corner
+                        const corner3 = { lat: 23.2660921, lon: 87.8254493 }; // Third corner
+                        const corner4 = { lat: 23.268127, lon: 87.82782 };    // Fourth corner
 
-                        // Calculate distance between two points in meters
-                        const distance = getDistanceFromLatLonInMeters(lat, lon, point1.lat, point1.lon);
-
-                        // Check if the distance is within the 20 meters radius
-                        if (distance <= 20) {
+                        // Check if the user is inside the rectangular area defined by the corners
+                        if (lat >= Math.min(corner1.lat, corner2.lat, corner3.lat, corner4.lat) &&
+                            lat <= Math.max(corner1.lat, corner2.lat, corner3.lat, corner4.lat) &&
+                            lon >= Math.min(corner1.lon, corner2.lon, corner3.lon, corner4.lon) &&
+                            lon <= Math.max(corner1.lon, corner2.lon, corner3.lon, corner4.lon)) {
                             document.getElementById('location').value = `${lat}, ${lon}`;
                             document.getElementById('locationMessage').textContent = ''; // Clear location message
                             document.getElementById('submitBtn').disabled = false; // Enable the submit button
                             resolve(); // Resolve the promise, allowing form submission
-                        } else if (distance > 20) {
-                            // If the user is outside the 20 meters radius
+                        } else {
+                            // If the user is outside the allowed area
                             document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move within the specified area.';
                             document.getElementById('submitBtn').disabled = true; // Disable the submit button
                             reject(); // Reject the promise, preventing form submission
