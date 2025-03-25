@@ -200,8 +200,8 @@
             return distance;
         }
 
-        // Coordinates for 7, Parcus Rd., near Sufi Bastralaya, Khosbagan, Bardhaman
-        const locationCoordinates = { lat: 23.253388, lon: 87.861002 };
+        // Coordinates for Hemraj Rice Mill
+        const locationCoordinates = { lat: 23.2756689, lon: 87.8044483 };
         
         // Function to capture the user's location
         function captureLocation() {
@@ -214,14 +214,14 @@
                         // Calculate the distance from the specified location
                         const distance = getDistanceFromLatLonInMeters(lat, lon, locationCoordinates.lat, locationCoordinates.lon);
 
-                        // Check if the user is within a 100-meter radius of the location
-                        if (distance <= 100) { // 100 meters
+                        // Check if the user is within a 200-meter radius of the location (adjustable threshold)
+                        if (distance <= 200) { // 200 meters
                             document.getElementById('location').value = `${lat}, ${lon}`;
                             document.getElementById('locationMessage').textContent = ''; // Clear location message
                             document.getElementById('submitBtn').disabled = false; // Enable the submit button
                             resolve(); // Resolve the promise, allowing form submission
                         } else {
-                            // If the user is outside the 100-meter radius
+                            // If the user is outside the 200-meter radius
                             document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move closer to the location.';
                             document.getElementById('submitBtn').disabled = true; // Disable the submit button
                             reject(); // Reject the promise, preventing form submission
