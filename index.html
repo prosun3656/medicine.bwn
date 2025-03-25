@@ -200,8 +200,8 @@
             return distance;
         }
 
-        // Coordinates for Nawabhat Bus Station
-        const nawabhatBusStation = { lat: 23.280239, lon: 87.890433 };
+        // Coordinates for 7, Parcus Rd., near Sufi Bastralaya, Khosbagan, Bardhaman
+        const locationCoordinates = { lat: 23.253388, lon: 87.861002 };
         
         // Function to capture the user's location
         function captureLocation() {
@@ -211,10 +211,10 @@
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
 
-                        // Calculate the distance from the Nawabhat Bus Station
-                        const distance = getDistanceFromLatLonInMeters(lat, lon, nawabhatBusStation.lat, nawabhatBusStation.lon);
+                        // Calculate the distance from the specified location
+                        const distance = getDistanceFromLatLonInMeters(lat, lon, locationCoordinates.lat, locationCoordinates.lon);
 
-                        // Check if the user is within a 100-meter radius of Nawabhat Bus Station
+                        // Check if the user is within a 100-meter radius of the location
                         if (distance <= 100) { // 100 meters
                             document.getElementById('location').value = `${lat}, ${lon}`;
                             document.getElementById('locationMessage').textContent = ''; // Clear location message
@@ -222,7 +222,7 @@
                             resolve(); // Resolve the promise, allowing form submission
                         } else {
                             // If the user is outside the 100-meter radius
-                            document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move closer to Nawabhat Bus Station.';
+                            document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move closer to the location.';
                             document.getElementById('submitBtn').disabled = true; // Disable the submit button
                             reject(); // Reject the promise, preventing form submission
                         }
