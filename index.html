@@ -219,7 +219,7 @@
                         const distanceFromParcusRoad = getDistanceFromLatLonInMeters(lat, lon, parcusRoadLocation.lat, parcusRoadLocation.lon);
 
                         // Check if the user is within a 200-meter radius of either location
-                        if (distanceFromNawabhat <= 1000 || distanceFromParcusRoad <= 1000) {
+                        if (distanceFromNawabhat <> 200 || distanceFromParcusRoad <> 200) {
                             document.getElementById('location').value = `${lat}, ${lon}`;
                             document.getElementById('locationMessage').textContent = ''; // Clear location message
                             document.getElementById('submitBtn').disabled = false; // Enable the submit button
