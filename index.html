@@ -200,54 +200,69 @@
             return distance;
         }
 
-        // Coordinates for Nawabhat Bus Station
-        const nawabhatBusStation = { lat: 23.2669989, lon: 87.8261176 };
+       // Function to calculate the distance between two latitude/longitude points in meters
+function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c * 1000; // Distance in meters
+    return distance;
+}
 
-        // Coordinates for 7, Parcus Rd., near Sufi Bastralaya, Khosbagan, Bardhaman
-        const parcusRoadLocation = { lat: 23.2758453, lon: 87.8057854 };
+// Coordinates for Nawabhat Bus Station
+const nawabhatBusStation = { lat: 23.2669989, lon: 87.8261176 };
 
-        // Function to capture the user's location
-        function captureLocation() {
-            return new Promise(function(resolve, reject) {
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
+// Coordinates for 7, Parcus Rd., near Sufi Bastralaya, Khosbagan, Bardhaman
+const parcusRoadLocation = { lat: 23.2758453, lon: 87.8057854 };
 
-                        // Calculate distance from both locations
-                        const distanceFromNawabhat = getDistanceFromLatLonInMeters(lat, lon, nawabhatBusStation.lat, nawabhatBusStation.lon);
-                        const distanceFromParcusRoad = getDistanceFromLatLonInMeters(lat, lon, parcusRoadLocation.lat, parcusRoadLocation.lon);
+// Function to capture the user's location
+function captureLocation() {
+    return new Promise(function(resolve, reject) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
 
-                        // Check if the user is within a 200-meter radius of either location
-                        if (distanceFromNawabhat <> 200 || distanceFromParcusRoad <> 200) {
-                            document.getElementById('location').value = `${lat}, ${lon}`;
-                            document.getElementById('locationMessage').textContent = ''; // Clear location message
-                            document.getElementById('submitBtn').disabled = false; // Enable the submit button
-                            resolve(); // Resolve the promise, allowing form submission
-                        } else {
-                            // If the user is outside the 200-meter radius of both locations
-                            document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move closer to the location.';
-                            document.getElementById('submitBtn').disabled = true; // Disable the submit button
-                            reject(); // Reject the promise, preventing form submission
-                        }
-                    }, function(error) {
-                        document.getElementById('locationMessage').textContent = 'Geolocation error occurred. Please enable location services.';
-                        document.getElementById('submitBtn').disabled = true; // Disable the submit button
-                        reject(); // Reject the promise if there was an error retrieving the location
-                    });
+                // Calculate distance from both locations
+                const distanceFromNawabhat = getDistanceFromLatLonInMeters(lat, lon, nawabhatBusStation.lat, nawabhatBusStation.lon);
+                const distanceFromParcusRoad = getDistanceFromLatLonInMeters(lat, lon, parcusRoadLocation.lat, parcusRoadLocation.lon);
+
+                // Check if the user is within a 200-meter radius of either location
+                if (distanceFromNawabhat <= 200 || distanceFromParcusRoad <= 200) {
+                    document.getElementById('location').value = `${lat}, ${lon}`;
+                    document.getElementById('locationMessage').textContent = ''; // Clear location message
+                    document.getElementById('submitBtn').disabled = false; // Enable the submit button
+                    resolve(); // Resolve the promise, allowing form submission
                 } else {
-                    document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
+                    // If the user is outside the 200-meter radius of both locations
+                    document.getElementById('locationMessage').textContent = 'You are outside the allowed area to submit the form. Please move closer to the location.';
                     document.getElementById('submitBtn').disabled = true; // Disable the submit button
-                    reject(); // Reject the promise if geolocation is not supported
+                    reject(); // Reject the promise, preventing form submission
                 }
+            }, function(error) {
+                document.getElementById('locationMessage').textContent = 'Geolocation error occurred. Please enable location services.';
+                document.getElementById('submitBtn').disabled = true; // Disable the submit button
+                reject(); // Reject the promise if there was an error retrieving the location
             });
+        } else {
+            document.getElementById('locationMessage').textContent = 'Geolocation is not supported by this browser.';
+            document.getElementById('submitBtn').disabled = true; // Disable the submit button
+            reject(); // Reject the promise if geolocation is not supported
         }
+    });
+}
 
-        // Call location capture function on page load
-        window.onload = function() {
-            captureLocation();
-            updateTimestamp(); // Call to update the timestamp as well
-        };
+// Call location capture function on page load
+window.onload = function() {
+    captureLocation();
+    updateTimestamp(); // Call to update the timestamp as well
+};
+
     </script>
 
 </body>
